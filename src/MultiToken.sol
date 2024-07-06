@@ -7,7 +7,7 @@ import {Arrays} from "lib/openzeppelin-contracts/contracts/utils/Arrays.sol";
 contract MultiToken {
 
     /// ERRORS 
-
+    error InvalidArrayLength(uint256, uint256);
 
 
     /// EVENTS 
@@ -41,7 +41,18 @@ contract MultiToken {
         return _balanceOf[id][account];
     }
 
-    function balanceOfBatch(address[] memory accounts, uint256[] memory ids) public view returns (uint256[] memory) {}
+    function balanceOfBatch(address[] memory accounts, uint256[] memory ids) public view returns (uint256[] memory) {
+        if (accounts.length != ids.length) {
+            revert InvalidArrayLength(ids.lenght, account.length);
+        }
+        uint256[] memory batchBalances = new uint256[](accounts.length);
+
+        for (uint256 i = 0; i < accounts.length; ++i) {
+            batchBalances[i] = balanceOf(account.unsafeMemoryAccess(i), ids.unsafeMemoryAccess(i));
+        }
+
+        return batchBalances;
+    }
 
     function setApprovalForAll(address operator, bool approved) public {}
 
