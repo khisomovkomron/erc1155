@@ -8,11 +8,12 @@ contract MultiToken {
 
     /// ERRORS 
     error InvalidArrayLength(uint256, uint256);
+    error InvalidOperator(address operator);
 
 
     /// EVENTS 
 
-
+    event ApprovalForAll(address indexed account, address indexed operator, bool approved);
 
 
     /// STATE VARIABLES
@@ -22,6 +23,7 @@ contract MultiToken {
     using Arrays for address[];
 
     mapping(uint256 id => mapping(address account => uint256)) private _balanceOf;
+    mapping(address account => mapping(address operator => bool)) private _operatorApprovals;
 
     string private _uri;
 
@@ -54,7 +56,9 @@ contract MultiToken {
         return batchBalances;
     }
 
-    function setApprovalForAll(address operator, bool approved) public {}
+    function setApprovalForAll(address operator, bool approved) public {
+        _setApprovalForAll(mgs.sender, operator, approved);
+    }
 
     function isApprovedForAll(address account, address operator) public view returns (bool) {}
 
@@ -82,7 +86,13 @@ contract MultiToken {
 
     function _burnBatch(address from, uint256[] memory ids, uint256[] memory values) internal {}
 
-    function _setApprovalForAll(address owner, address operator, bool approved) internal {}
+    function _setApprovalForAll(address owner, address operator, bool approved) internal {
+        if (operator == address(0)) {
+            revert InvalidOperator(address(0));
+        } 
+        _operatorApprovals[owner][operator] = approved;
+        emit ApprovalForAll(owner, operator, approved);
+    }
 
     function _doSafeTransferAcceptanceCheck(address operator, address from, address to, uint256 id, uint256 value, bytes memory data) private {}
 
