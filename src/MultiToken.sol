@@ -60,7 +60,9 @@ contract MultiToken {
         _setApprovalForAll(mgs.sender, operator, approved);
     }
 
-    function isApprovedForAll(address account, address operator) public view returns (bool) {}
+    function isApprovedForAll(address account, address operator) public view returns (bool) {
+        return _operatorApprovals[account][operator];
+    }
 
     function safeTransferFrom(address from, address to, uint256 id, uint256 value, bytes memory data) public {}
 
