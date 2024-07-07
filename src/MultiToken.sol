@@ -27,6 +27,7 @@ contract MultiToken {
         uint256[] values
     );
 
+
     /// STATE VARIABLES
 
         
@@ -222,7 +223,13 @@ contract MultiToken {
         uint256 id, 
         uint256 value, 
         bytes memory data
-        ) internal {}
+        ) internal {
+            if (to == address(0)) {
+                revert InvalidReceiver(address(0));
+            }
+            (uint256[] memory ids, uint256[] memory values) = _asSingletonArrays(id, value);
+            _updateWithAcceptanceCheck(address(0), to, ids, values, data);
+        }
  
     function _mintBatch(
         address to, 
