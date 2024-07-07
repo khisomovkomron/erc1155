@@ -111,7 +111,13 @@ contract MultiToken {
         uint256[] memory ids, 
         uint256[] memory values, 
         bytes memory data
-        ) public {}
+        ) public {
+            address sender = msg.sender;
+            if (from != sender && !isApprovedForAll(from, sender)) {
+                revert MissingApprovalForALl(sender, from);
+            }
+            _safeBatchTransferFrom(from, to, ids, values, data);
+        }
 
 
     /// INTERNAL FUNCTIONS
@@ -183,7 +189,15 @@ contract MultiToken {
         uint256[] memory ids, 
         uint256[] memory values, 
         bytes memory data
-        ) internal {}
+        ) internal {
+            if (to == address(0)) {
+                revert InvalidReceiver(address(0));
+            } 
+            if (from == address(0)) {
+                revert InvalidSender(address(0));
+            }
+            _updateWithAcceptanceCheck(from, to, ids, values, data);
+        }
 
     function _updateWithAcceptanceCheck(
         address from, 
