@@ -259,7 +259,12 @@ contract MultiToken {
         address from, 
         uint256[] memory ids, 
         uint256[] memory values
-        ) internal {}
+        ) internal {
+            if (from == address(0)) {
+                revert InvalidSender(address(0));
+            }
+        }
+        _updateWithAcceptanceCheck(from, address(0), ids, values, "");
 
     function _setApprovalForAll(
         address owner, 
